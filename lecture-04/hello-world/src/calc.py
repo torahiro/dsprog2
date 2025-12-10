@@ -1,5 +1,5 @@
 import flet as ft
-
+import math
 
 class CalcButton(ft.ElevatedButton):
     def __init__(self, text, button_clicked, expand=1):
@@ -9,13 +9,11 @@ class CalcButton(ft.ElevatedButton):
         self.on_click = button_clicked
         self.data = text
 
-
 class DigitButton(CalcButton):
     def __init__(self, text, button_clicked, expand=1):
         CalcButton.__init__(self, text, button_clicked, expand)
         self.bgcolor = ft.Colors.WHITE24
         self.color = ft.Colors.WHITE
-
 
 class ActionButton(CalcButton):
     def __init__(self, text, button_clicked):
@@ -23,13 +21,11 @@ class ActionButton(CalcButton):
         self.bgcolor = ft.Colors.ORANGE
         self.color = ft.Colors.WHITE
 
-
 class ExtraActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
         self.bgcolor = ft.Colors.BLUE_GREY_100
         self.color = ft.Colors.BLACK
-
 
 class CalculatorApp(ft.Container):
     def __init__(self):
@@ -44,6 +40,22 @@ class CalculatorApp(ft.Container):
         self.content = ft.Column(
             controls=[
                 ft.Row(controls=[self.result], alignment="end"),
+                ft.Row(
+                    controls=[
+                        ExtraActionButton(text="sin", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="cos", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="tan", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="log", button_clicked=self.button_clicked),
+                    ]
+                ),
+                ft.Row(
+                    controls=[
+                        ExtraActionButton(text="√", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="(", button_clicked=self.button_clicked),
+                        ExtraActionButton(text=")", button_clicked=self.button_clicked),
+                        ActionButton(text="/", button_clicked=self.button_clicked),
+                    ]
+                ),
                 ft.Row(
                     controls=[
                         ExtraActionButton(text="AC", button_clicked=self.button_clicked),
@@ -116,6 +128,41 @@ class CalculatorApp(ft.Container):
         elif data in ("%"):
             self.result.value = float(self.result.value) / 100
             self.reset()
+        elif data == "sin":
+            self.result.value = self.format_number(
+                math.sin(math.radians(float(self.result.value)))
+            )
+            self.reset()
+
+        elif data == "cos":
+            self.result.value = self.format_number(
+                math.cos(math.radians(float(self.result.value)))
+            )
+            self.reset()
+
+        elif data == "tan":
+            self.result.value = self.format_number(
+                math.tan(math.radians(float(self.result.value)))
+            )
+            self.reset()
+
+        elif data == "log":
+            if float(self.result.value) <= 0:
+                self.result.value = "Error"
+            else:
+                self.result.value = self.format_number(
+                    math.log10(float(self.result.value))
+                )
+            self.reset()
+
+        elif data == "√":
+            if float(self.result.value) < 0:
+                self.result.value = "Error"
+            else:
+                self.result.value = self.format_number(
+                    math.sqrt(float(self.result.value))
+                )
+            self.reset()
 
         elif data in ("+/-"):
             if float(self.result.value) > 0:
@@ -154,11 +201,9 @@ class CalculatorApp(ft.Container):
         self.operand1 = 0
         self.new_operand = True
 
-
 def main(page: ft.Page):
     page.title = "Simple Calculator"
     calc = CalculatorApp()
     page.add(calc)
-
 
 ft.app(main)
