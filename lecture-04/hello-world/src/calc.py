@@ -207,3 +207,8 @@ def main(page: ft.Page):
     page.add(calc)
 
 ft.app(main)
+
+# 参考資料
+# 数研出版『新編数学Ⅲ』
+# 著者　阿原一志
+# 答えの確認のためと計算式の確認のため使用した
